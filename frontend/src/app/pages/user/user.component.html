@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Agregar Nuevo Estudiante</h4>
+            </div>
+            <div class="card-body">
+                <form (ngSubmit)="agregarEstudiante()" #estudianteForm="ngForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="nuevoEstudiante.nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="correo">Correo:</label>
+                        <input type="email" class="form-control" id="correo" name="correo" [(ngModel)]="nuevoEstudiante.correo" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar Estudiante</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Alumnos Registrados</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let estudiante of estudiantes">
+                                <td>
+                                    <ng-container *ngIf="!estudiante.editando">{{ estudiante.Nombre }}</ng-container>
+                                    <input *ngIf="estudiante.editando" type="text" [(ngModel)]="estudiante.Nombre">
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="!estudiante.editando">{{ estudiante.Correo }}</ng-container>
+                                    <input *ngIf="estudiante.editando" type="text" [(ngModel)]="estudiante.Correo">
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="!estudiante.editando">
+                                        <button class="btn btn-sm btn-outline-success btn-round btn-icon" (click)="editarEstudiante(estudiante)"><i class="fa fa-pencil"></i></button>
+                                    </ng-container>
+                                    <ng-container *ngIf="estudiante.editando">
+                                        <button class="btn btn-sm btn-outline-success btn-round btn-icon" (click)="guardarCambios(estudiante)"><i class="fa fa-save"></i></button>
+                                    </ng-container>
+                                    <button class="btn btn-sm btn-outline-danger btn-round btn-icon" (click)="darDeBajaEstudiante(estudiante.Id_estudiante)"><i class="fa fa-trash"></i></button>
+                                </td>                                
+                            </tr>                            
+ 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
