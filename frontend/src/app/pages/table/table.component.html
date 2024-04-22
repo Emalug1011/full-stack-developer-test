@@ -1,257 +1,111 @@
-<div class="row">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header">
-        <h4 class="card-title"> Simple Table</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead class=" text-primary">
-              <th>
-                Name
-              </th>
-              <th>
-                Country
-              </th>
-              <th>
-                City
-              </th>
-              <th class="text-right">
-                Salary
-              </th>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  Dakota Rice
-                </td>
-                <td>
-                  Niger
-                </td>
-                <td>
-                  Oud-Turnhout
-                </td>
-                <td class="text-right">
-                  $36,738
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Minerva Hooper
-                </td>
-                <td>
-                  Curaçao
-                </td>
-                <td>
-                  Sinaai-Waas
-                </td>
-                <td class="text-right">
-                  $23,789
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sage Rodriguez
-                </td>
-                <td>
-                  Netherlands
-                </td>
-                <td>
-                  Baileux
-                </td>
-                <td class="text-right">
-                  $56,142
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Philip Chaney
-                </td>
-                <td>
-                  Korea, South
-                </td>
-                <td>
-                  Overland Park
-                </td>
-                <td class="text-right">
-                  $38,735
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Doris Greene
-                </td>
-                <td>
-                  Malawi
-                </td>
-                <td>
-                  Feldkirchen in Kärnten
-                </td>
-                <td class="text-right">
-                  $63,542
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Mason Porter
-                </td>
-                <td>
-                  Chile
-                </td>
-                <td>
-                  Gloucester
-                </td>
-                <td class="text-right">
-                  $78,615
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Jon Porter
-                </td>
-                <td>
-                  Portugal
-                </td>
-                <td>
-                  Gloucester
-                </td>
-                <td class="text-right">
-                  $98,615
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Crear nueva sesión</h4>
   </div>
-  <div class="col-md-12">
-    <div class="card card-plain">
-      <div class="card-header">
-        <h4 class="card-title"> Table on Plain Background</h4>
-        <p class="card-category"> Here is a subtitle for this table</p>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead class=" text-primary">
-              <th>
-                Name
-              </th>
-              <th>
-                Country
-              </th>
-              <th>
-                City
-              </th>
-              <th class="text-right">
-                Salary
-              </th>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  Dakota Rice
-                </td>
-                <td>
-                  Niger
-                </td>
-                <td>
-                  Oud-Turnhout
-                </td>
-                <td class="text-right">
-                  $36,738
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Minerva Hooper
-                </td>
-                <td>
-                  Curaçao
-                </td>
-                <td>
-                  Sinaai-Waas
-                </td>
-                <td class="text-right">
-                  $23,789
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sage Rodriguez
-                </td>
-                <td>
-                  Netherlands
-                </td>
-                <td>
-                  Baileux
-                </td>
-                <td class="text-right">
-                  $56,142
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Philip Chaney
-                </td>
-                <td>
-                  Korea, South
-                </td>
-                <td>
-                  Overland Park
-                </td>
-                <td class="text-right">
-                  $38,735
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Doris Greene
-                </td>
-                <td>
-                  Malawi
-                </td>
-                <td>
-                  Feldkirchen in Kärnten
-                </td>
-                <td class="text-right">
-                  $63,542
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Mason Porter
-                </td>
-                <td>
-                  Chile
-                </td>
-                <td>
-                  Gloucester
-                </td>
-                <td class="text-right">
-                  $78,615
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Jon Porter
-                </td>
-                <td>
-                  Portugal
-                </td>
-                <td>
-                  Gloucester
-                </td>
-                <td class="text-right">
-                  $98,615
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="card-body">
+    <!-- Formulario para crear una nueva sesión -->
+    <form (ngSubmit)="crearNuevaSesion()">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" [(ngModel)]="nuevaSesion.nombre" name="nombre" required>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="cupo">Cupo:</label>
+            <input type="number" class="form-control" id="cupo" [(ngModel)]="nuevaSesion.cupo" name="cupo" required>
+          </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="fechaInicio">Fecha de Inicio:</label>
+            <input type="date" class="form-control" id="fechaInicio" [(ngModel)]="nuevaSesion.fechaInicio"
+              name="fechaInicio" required>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="horaInicio">Hora de Inicio:</label>
+            <input type="time" class="form-control" id="horaInicio" [(ngModel)]="nuevaSesion.horaInicio"
+              name="horaInicio" required>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="fechaFin">Fecha de Fin:</label>
+            <input type="date" class="form-control" id="fechaFin" [(ngModel)]="nuevaSesion.fechaFin" name="fechaFin"
+              required>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="horaFin">Hora de Fin:</label>
+            <input type="time" class="form-control" id="horaFin" [(ngModel)]="nuevaSesion.horaFin" name="horaFin"
+              required>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mb-3">Crear Nueva Sesión</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Listado de sesiones</h4>
+  </div>
+  <div class="card-body">
+    <!-- Tabla de sesiones existentes -->
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Fecha Inicio</th>
+            <th>Hora Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Hora Fin</th>
+            <th>Cupo</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let sesion of sesiones">
+            <tr>
+              <td *ngIf="!sesion.editando">{{ sesion.Nombre }}</td>
+              <td *ngIf="!sesion.editando">{{ sesion.FechaInicio }}</td>
+              <td *ngIf="!sesion.editando">{{ sesion.horaInicio }}</td>
+              <td *ngIf="!sesion.editando">{{ sesion.FechaFin }}</td>
+              <td *ngIf="!sesion.editando">{{ sesion.horaFin }}</td>
+              <td *ngIf="!sesion.editando">{{ sesion.Cupo }}</td>
+              <td *ngIf="!sesion.editando">
+                <button class="btn btn-sm btn-outline-primary btn-round btn-icon" (click)="editarSesion(sesion)"><i class="fa fa-pencil"></i></button>
+                <button class="btn btn-sm btn-outline-danger btn-round btn-icon" (click)="eliminarSesion(sesion.Id_sesion)"><i class="fa fa-trash"></i></button>
+              </td>
+              <td *ngIf="sesion.editando">
+                <button class="btn btn-sm btn-success btn-round btn-icon" (click)="guardarEdicion(sesion)"><i class="fa fa-check"></i></button>
+                <button class="btn btn-sm btn-danger btn-round btn-icon" (click)="cancelarEdicion(sesion)"><i class="fa fa-times"></i></button>
+              </td>
+            </tr>
+            <tr *ngIf="sesion.editando">
+              <td><input type="text" class="form-control" [(ngModel)]="sesion.Nombre"></td>
+              <td><input type="date" class="form-control" [(ngModel)]="sesion.FechaInicio"></td>
+              <td><input type="time" class="form-control" [(ngModel)]="sesion.horaInicio"></td>
+              <td><input type="date" class="form-control" [(ngModel)]="sesion.FechaFin"></td>
+              <td><input type="time" class="form-control" [(ngModel)]="sesion.horaFin"></td>
+              <td><input type="number" class="form-control" [(ngModel)]="sesion.Cupo"></td>
+              <td></td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
+

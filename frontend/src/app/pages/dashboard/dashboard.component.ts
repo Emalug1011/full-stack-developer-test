@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import Chart from 'chart.js';
+import { FullCalendarModule } from '@fullcalendar/angular'; // Import the module
+import dayGridPlugin from '@fullcalendar/daygrid'; // Import the day grid plugin
+import { AsignacionesService } from '../../Services/Asignaciones/asignaciones.service';
+import { ToastrService } from 'ngx-toastr';
+ 
 
 
 @Component({
@@ -9,201 +13,133 @@ import Chart from 'chart.js';
 })
 
 export class DashboardComponent implements OnInit{
+  selectedDate: Date; 
+  FechaTitulo: string; 
+  sesiones: any[] = [];
+  DetalleSesion: any[] = [];
+  FechaDesc: string; 
+  HorarioDesc: string; 
+  CupoDesc: number; 
+  DesCurso: string;
+  estudiantesDisponibles: any[] = [];
+  estudianteSeleccionado: number | null = null;
+  idSesionSeleccionado: number | null = null;
+  modoAsignacionAlumno: boolean = false;
+  selectedRowIndex: number = -1;
 
-  public canvas : any;
-  public ctx;
-  public chartColor;
-  public chartEmail;
-  public chartHours;
+  constructor(private asignacionesService: AsignacionesService , private toastr: ToastrService) { }
 
-    ngOnInit(){
-      this.chartColor = "#FFFFFF";
+  calendarOptions: any = {
+    plugins: [dayGridPlugin],
+    initialView: 'dayGridMonth',
+    events: [
+      { title: 'Event 1', start: '2024-04-25' },
+      // Add more events as needed
+    ]
+  }; 
 
-      this.canvas = document.getElementById("chartHours");
-      this.ctx = this.canvas.getContext("2d");
+    ngOnInit(){}
 
-      this.chartHours = new Chart(this.ctx, {
-        type: 'line',
-
-        data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
-          datasets: [{
-              borderColor: "#6bd098",
-              backgroundColor: "#6bd098",
-              pointRadius: 0,
-              pointHoverRadius: 0,
-              borderWidth: 3,
-              data: [300, 310, 316, 322, 330, 326, 333, 345, 338, 354]
-            },
-            {
-              borderColor: "#f17e5d",
-              backgroundColor: "#f17e5d",
-              pointRadius: 0,
-              pointHoverRadius: 0,
-              borderWidth: 3,
-              data: [320, 340, 365, 360, 370, 385, 390, 384, 408, 420]
-            },
-            {
-              borderColor: "#fcc468",
-              backgroundColor: "#fcc468",
-              pointRadius: 0,
-              pointHoverRadius: 0,
-              borderWidth: 3,
-              data: [370, 394, 415, 409, 425, 445, 460, 450, 478, 484]
+    onDateSelect(date: any) {    
+      const fechaSeleccionada = this.formatDate(date);  
+      this.FechaTitulo = fechaSeleccionada;    
+      this.asignacionesService.getAsignaciones(fechaSeleccionada).subscribe(
+        (data: any) => { 
+          // Limpiar los arreglos antes de agregar nuevos datos
+          this.sesiones = [];
+          this.DetalleSesion = [];
+    
+          // Iterar sobre el objeto data y extraer las sesiones y detalles
+          for (const sesion in data.sesiones) {
+            if (data.sesiones.hasOwnProperty(sesion)) {
+              this.sesiones.push(sesion); 
+              data.sesiones[sesion].forEach(detalle => {
+                this.DetalleSesion.push({
+                  sesion: sesion,
+                  fecha_inicio: detalle.fecha_inicio,
+                  fecha_fin: detalle.fecha_fin,
+                  hora_fin: detalle.hora_fin,
+                  hora_inicio: detalle.hora_inicio,
+                  cupo: detalle.cupo,
+                  Id_sesion: detalle.Id_sesion,
+                  cupo_disponible: detalle.cupo_disponible,
+                  Descripcion_dia: detalle.Descripcion_dia
+                });
+              });
             }
-          ]
+          }
         },
-        options: {
-          legend: {
-            display: false
-          },
-
-          tooltips: {
-            enabled: false
-          },
-
-          scales: {
-            yAxes: [{
-
-              ticks: {
-                fontColor: "#9f9f9f",
-                beginAtZero: false,
-                maxTicksLimit: 5,
-                //padding: 20
-              },
-              gridLines: {
-                drawBorder: false,
-                zeroLineColor: "#ccc",
-                color: 'rgba(255,255,255,0.05)'
-              }
-
-            }],
-
-            xAxes: [{
-              barPercentage: 1.6,
-              gridLines: {
-                drawBorder: false,
-                color: 'rgba(255,255,255,0.1)',
-                zeroLineColor: "transparent",
-                display: false,
-              },
-              ticks: {
-                padding: 20,
-                fontColor: "#9f9f9f"
-              }
-            }]
-          },
+        error => {
+          console.error('Error al obtener las asignaciones:', error);
         }
-      });
-
-
-      this.canvas = document.getElementById("chartEmail");
-      this.ctx = this.canvas.getContext("2d");
-      this.chartEmail = new Chart(this.ctx, {
-        type: 'pie',
-        data: {
-          labels: [1, 2, 3],
-          datasets: [{
-            label: "Emails",
-            pointRadius: 0,
-            pointHoverRadius: 0,
-            backgroundColor: [
-              '#e3e3e3',
-              '#4acccd',
-              '#fcc468',
-              '#ef8157'
-            ],
-            borderWidth: 0,
-            data: [342, 480, 530, 120]
-          }]
-        },
-
-        options: {
-
-          legend: {
-            display: false
-          },
-
-          pieceLabel: {
-            render: 'percentage',
-            fontColor: ['white'],
-            precision: 2
-          },
-
-          tooltips: {
-            enabled: false
-          },
-
-          scales: {
-            yAxes: [{
-
-              ticks: {
-                display: false
-              },
-              gridLines: {
-                drawBorder: false,
-                zeroLineColor: "transparent",
-                color: 'rgba(255,255,255,0.05)'
-              }
-
-            }],
-
-            xAxes: [{
-              barPercentage: 1.6,
-              gridLines: {
-                drawBorder: false,
-                color: 'rgba(255,255,255,0.1)',
-                zeroLineColor: "transparent"
-              },
-              ticks: {
-                display: false,
-              }
-            }]
-          },
-        }
-      });
-
-      var speedCanvas = document.getElementById("speedChart");
-
-      var dataFirst = {
-        data: [0, 19, 15, 20, 30, 40, 40, 50, 25, 30, 50, 70],
-        fill: false,
-        borderColor: '#fbc658',
-        backgroundColor: 'transparent',
-        pointBorderColor: '#fbc658',
-        pointRadius: 4,
-        pointHoverRadius: 4,
-        pointBorderWidth: 8,
-      };
-
-      var dataSecond = {
-        data: [0, 5, 10, 12, 20, 27, 30, 34, 42, 45, 55, 63],
-        fill: false,
-        borderColor: '#51CACF',
-        backgroundColor: 'transparent',
-        pointBorderColor: '#51CACF',
-        pointRadius: 4,
-        pointHoverRadius: 4,
-        pointBorderWidth: 8
-      };
-
-      var speedData = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [dataFirst, dataSecond]
-      };
-
-      var chartOptions = {
-        legend: {
-          display: false,
-          position: 'top'
-        }
-      };
-
-      var lineChart = new Chart(speedCanvas, {
-        type: 'line',
-        hover: false,
-        data: speedData,
-        options: chartOptions
-      });
+      );
     }
+    
+
+  formatDate(date: any): string {    
+    const day = date.day < 10 ? '0' + date.day : date.day;
+    const month = date.month < 10 ? '0' + date.month : date.month;
+    const year = date.year;    
+    return `${day}-${month}-${year}`;
+  }
+
+  AasignarEstudiante(data: any){
+    const index = this.DetalleSesion.findIndex(item => item === data);
+  
+    // Actualiza el índice de la fila seleccionada
+    this.selectedRowIndex = index;
+    this.FechaDesc = data.Descripcion_dia; 
+    this.HorarioDesc = data.hora_inicio; 
+    this.CupoDesc = data.cupo_disponible;
+    this.DesCurso = data.sesion; 
+    this.idSesionSeleccionado = data.Id_sesion;  
+
+    this.GetEstudiantes( this.idSesionSeleccionado);
+
+  }
+
+  GetEstudiantes(Id_sesion){
+    this.estudiantesDisponibles = [];
+    this.asignacionesService.getAsignacionById(Id_sesion).subscribe(
+      (data: any[]) => {
+        this.estudiantesDisponibles = data; // Almacena los datos en la variable estudiantesDisponibles
+        this.modoAsignacionAlumno = true;
+      },
+      error => {
+        console.error('Error al obtener estudiantes disponibles:', error);
+      }
+    ); 
+
+  }
+  
+  agregarAlumno() {
+    if (this.estudianteSeleccionado !== null) {
+      const asignacion = {
+        idEstudiante: this.estudianteSeleccionado,
+        idSesion:  this.idSesionSeleccionado
+      };
+
+      this.asignacionesService.crearAsignacion(asignacion).subscribe(
+        () => {
+          this.toastr.success('Estudiante asignado exitosamente', '', {
+            positionClass: 'toast-top-right' 
+          });
+          
+          this.GetEstudiantes( this.idSesionSeleccionado);
+          this.CupoDesc = this.CupoDesc - 1;
+          if(this.CupoDesc == 0 ){
+              this.modoAsignacionAlumno = false;
+          }
+         
+        },
+        error => {
+          this.toastr.error(error.error.error[0].error , 'Error') ;          
+          
+        }
+      );
+    } else { 
+      this.toastr.warning('Ningún estudiante seleccionado' , 'Warning');  
+    }
+  }  
+
 }

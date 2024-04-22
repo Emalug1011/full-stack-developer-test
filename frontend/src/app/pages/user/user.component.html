@@ -52,7 +52,8 @@
                                         <button class="btn btn-sm btn-outline-success btn-round btn-icon" (click)="editarEstudiante(estudiante)"><i class="fa fa-pencil"></i></button>
                                     </ng-container>
                                     <ng-container *ngIf="estudiante.editando">
-                                        <button class="btn btn-sm btn-outline-success btn-round btn-icon" (click)="guardarCambios(estudiante)"><i class="fa fa-save"></i></button>
+                                        <button class="btn btn-sm btn-outline-primary btn-round btn-icon" (click)="guardarCambios(estudiante)"><i class="fa fa-save"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger btn-round btn-icon" (click)="cancelarEdicion(estudiante)"><i class="fa fa-times"></i></button> <!-- Botón de Cancelar -->
                                     </ng-container>
                                     <button class="btn btn-sm btn-outline-danger btn-round btn-icon" (click)="darDeBajaEstudiante(estudiante.Id_estudiante)"><i class="fa fa-trash"></i></button>
                                 </td>                                
@@ -65,3 +66,4 @@
         </div>
     </div>
 </div>
+

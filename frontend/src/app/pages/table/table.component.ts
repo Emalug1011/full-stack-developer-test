@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { SesionesService } from '../../Services/Sesiones/sesiones.service';
+import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-declare interface TableData {
-    headerRow: string[];
-    dataRows: string[][];
-}
 
 @Component({
     selector: 'table-cmp',
@@ -12,30 +11,111 @@ declare interface TableData {
 })
 
 export class TableComponent implements OnInit{
-    public tableData1: TableData;
-    public tableData2: TableData;
+    sesiones: any[];
+    nuevaSesion: any = {};
+
+    constructor(private sesionesService: SesionesService , private toastr: ToastrService ,  private modalService: NgbModal) { }
+
     ngOnInit(){
-        this.tableData1 = {
-            headerRow: [ 'ID', 'Name', 'Country', 'City', 'Salary'],
-            dataRows: [
-                ['1', 'Dakota Rice', 'Niger', 'Oud-Turnhout', '$36,738'],
-                ['2', 'Minerva Hooper', 'Curaçao', 'Sinaai-Waas', '$23,789'],
-                ['3', 'Sage Rodriguez', 'Netherlands', 'Baileux', '$56,142'],
-                ['4', 'Philip Chaney', 'Korea, South', 'Overland Park', '$38,735'],
-                ['5', 'Doris Greene', 'Malawi', 'Feldkirchen in Kärnten', '$63,542'],
-                ['6', 'Mason Porter', 'Chile', 'Gloucester', '$78,615']
-            ]
-        };
-        this.tableData2 = {
-            headerRow: [ 'ID', 'Name',  'Salary', 'Country', 'City' ],
-            dataRows: [
-                ['1', 'Dakota Rice','$36,738', 'Niger', 'Oud-Turnhout' ],
-                ['2', 'Minerva Hooper', '$23,789', 'Curaçao', 'Sinaai-Waas'],
-                ['3', 'Sage Rodriguez', '$56,142', 'Netherlands', 'Baileux' ],
-                ['4', 'Philip Chaney', '$38,735', 'Korea, South', 'Overland Park' ],
-                ['5', 'Doris Greene', '$63,542', 'Malawi', 'Feldkirchen in Kärnten', ],
-                ['6', 'Mason Porter', '$78,615', 'Chile', 'Gloucester' ]
-            ]
-        };
+        this. obtenerSesiones();
     }
+
+    obtenerSesiones() {
+        this.sesionesService.getSesiones().subscribe(
+          data => {
+            this.sesiones = data;
+          },
+          error => {
+            console.error('Error al obtener sesiones:', error);
+          }
+        );
+      }
+    
+      crearNuevaSesion() {
+        // Concatenar fecha de inicio con hora de inicio
+        const fechaInicioCompleta = `${this.nuevaSesion.fechaInicio}T${this.nuevaSesion.horaInicio}`;
+    
+        // Concatenar fecha de fin con hora de fin
+        const fechaFinCompleta = `${this.nuevaSesion.fechaFin}T${this.nuevaSesion.horaFin}`;
+    
+        // Crear objeto con los datos de la sesión
+        const sesion = {
+          nombre: this.nuevaSesion.nombre,
+          start_datetime: fechaInicioCompleta,
+          end_datetime: fechaFinCompleta,
+          cupo: this.nuevaSesion.cupo
+        };
+    
+        // Llamar al servicio para crear la sesión
+        this.sesionesService.crearSesion(sesion).subscribe(
+          response => {
+            this. obtenerSesiones();
+            this.toastr.success('Sesión creada de manera exitosa');
+            this.nuevaSesion = [];
+           
+          },
+          error => {
+            this.toastr.error('No se pudo gestionar tu solicitud.');
+            // Aquí puedes manejar el error como desees
+          }
+        );
+      }
+    
+      editarSesion(sesion: any) {
+        sesion.editando = true;
+      }
+      
+      guardarEdicion(sesion: any) {        
+        if (!sesion.Nombre || !sesion.FechaInicio || !sesion.horaInicio || !sesion.FechaFin || !sesion.horaFin || !sesion.Cupo) {
+            this.toastr.warning('Todos los campos son obligatorios');          
+          return;
+        }
+      
+        if (sesion.Cupo < 1) {
+            this.toastr.warning('El cupo debe ser igual o mayor a 1');            
+            return;
+          }
+        
+        
+        const fechaInicio = new Date(sesion.FechaInicio + 'T' + sesion.horaInicio);
+        const fechaFin = new Date(sesion.FechaFin + 'T' + sesion.horaFin);
+        if (fechaInicio >= fechaFin) {
+            this.toastr.error('La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin');          
+          return;
+        }      
+        
+        sesion.Start_datetime = sesion.FechaInicio + ' ' + sesion.horaInicio;        
+        sesion.End_datetime = sesion.FechaFin + ' ' + sesion.horaFin;
+              
+        this.sesionesService.actualizarSesion(sesion.Id_sesion, sesion).subscribe(
+          response => {            
+            this.toastr.success('Sesión actualizada correctamente');
+            sesion.editando = false; 
+          },
+          error => {  
+            this.toastr.error('Error al actualizar la sesión');           
+          }
+        );
+      }
+      
+      
+      cancelarEdicion(sesion: any) {
+        sesion.editando = false;
+      }    
+ 
+    
+      eliminarSesion(id: number) {
+        if (confirm('¿Estás seguro de que deseas eliminar esta sesión?')) {
+          this.sesionesService.eliminarSesion(id).subscribe(
+            () => {
+              console.log('Sesión eliminada exitosamente');
+              this.obtenerSesiones(); // Actualizar la lista de sesiones después de eliminar
+            },
+            error => {
+              console.error('Error al eliminar sesión:', error);
+            }
+          );
+        }
+      }    
+
 }

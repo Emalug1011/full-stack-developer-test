@@ -90,5 +90,14 @@ export class UserComponent implements OnInit {
               console.error('Error al actualizar estudiante:', error);
           }
       );
-  }    
+  } 
+  
+  cancelarEdicion(estudiante: any): void {
+    // Revertir los cambios
+    estudiante.editando = false;
+ 
+  }
+  
+
+
 }
