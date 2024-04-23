@@ -7,10 +7,10 @@ let connection;
 
 try {
     connection = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "bd_uni"
+        host: process.env.DB_HOST || "localhost",
+        user: process.env.DB_USER || "root",
+        password: process.env.DB_PASSWORD || "",
+        database: process.env.DB_DATABASE || "bd_uni"
     });
 } catch (error) {
     console.log("Error al conectar con la base de datos");
