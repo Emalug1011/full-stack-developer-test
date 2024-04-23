@@ -6,7 +6,7 @@ module.exports = app => {
     definition: {
       openapi: '3.0.0',
       info: {
-        title: 'Hello World',
+        title: 'APP EDUGT',
         version: '1.0.0',
       },
     },
